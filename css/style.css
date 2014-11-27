@@ -1,15 +1,12 @@
-.stopwatch {
-  display: inline-block;
-  background-color: white;
-  border: 1px solid #eee;
-  padding: 5px;
-  margin: 5px;
-}
-.stopwatch span {
+#stopwatch span {
   font-weight: bold;
   display: block;
 }
-.stopwatch a {
-  padding-right: 5px;
-  text-decoration: none;
+#stopwatch .stopwatch_time {
+	font-size: 150px;
+	text-align: center;
+}
+#stopwatch .stopwatch_start, #stopwatch .stopwatch_stop, #stopwatch .stopwatch_reset{
+	display: block;
+	margin: 20px auto;
 }

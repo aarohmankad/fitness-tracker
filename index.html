@@ -4,18 +4,19 @@
 	<title>Fitness Tracker</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
+	<script src="https://cdn.firebase.com/js/client/2.0.5/firebase.js"></script>
 </head>
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-4 col-lg-offset-4">
-				<div id="stopwatch-btn">
-					<button class="btn btn-block btn-success" id="stopwatch-start">Start Run!</button>
-				</div>
+			<div class="col-sm-12">
+				<input type="text" class="form-control" placeholder="Student ID..." id="student_id">
 			</div>
 		</div>
 		<div class="row">
-			<div id="stopwatch"></div>
+			<div class="col-sm-12">
+				<div id="stopwatch"></div>
+			</div>
 		</div>
 	</div>
 <script src="js/app.js"></script>
