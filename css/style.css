@@ -10,3 +10,15 @@
 	display: block;
 	margin: 20px auto;
 }
+
+#times tr
+{
+	border-bottom: 1px solid #eee;
+	padding: 20px;
+}
+
+#times tr td
+{
+	text-align: center;
+	padding: 10px;
+}
