@@ -1,3 +1,6 @@
+// This is a fallback file in case 
+// the user doesn't have internet access.
+// This file will then serve as a local database
 {
   "firebase": "mvhs-fitness-tracker",
   "public": ".",

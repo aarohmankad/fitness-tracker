@@ -1,30 +1,53 @@
+<!-- This is the template for our tracker -->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Fitness Tracker</title>
+	<!-- This line makes the website look better on smaller devices -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Both of these links handle the styling of the app -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
+	<!-- Import our database library -->
 	<script src="https://cdn.firebase.com/js/client/2.0.5/firebase.js"></script>
+	<!-- 
+		This is a fallback file to store data in, in case the user has no internet connection 
+	-->
+	<script src="firebase.json"></script>
 </head>
 <body>
+	<!-- Container for our app -->
 	<div class="container">
+		<!-- Create a row -->
 		<div class="row">
+			<!-- This class is configuring the layout. -->
 			<div class="col-sm-8 col-sm-offset-2">
+				<!-- Input box to scan id card of students -->
+				<!-- 
+					You can fetch the value of this input box by referring to it's id attribute
+				 -->
 				<input type="text" class="form-control" placeholder="Student ID..." id="student_id_input">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2">
+				<!-- 
+					Template for our stopwatch, time and buttons are injected into this tag
+				-->
 				<div id="stopwatch"></div>
 			</div>
-		</div>	
+		</div>
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2">
+				<!-- 
+					A table of all student's times. ID and times will be injected here once id is scanned
+				 -->
 				<table id="times" class="table"></table>
 			</div>
 		</div>
 	</div>
-<script src="js/app.js"></script>
+	
+	<!-- Load our Javascript file to add interactivity with database and application -->
+	<script src="js/app.js"></script>
 </body>
 </html>
