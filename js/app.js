@@ -251,6 +251,8 @@ document.getElementById('student_id_input').addEventListener('keyup', function (
     time: stopwatch.getTime()
   });
 
+  // Reset id counter
+  count = 0;
   // Once we set a time for the student, clear the input box for the next id.
   document.getElementById('student_id_input').value = "";
   // Reset id counter
