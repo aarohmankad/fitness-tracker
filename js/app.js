@@ -1,12 +1,9 @@
 // Search in order of how everything is stepped through. There are steps 1-
 
-// Initialize the fb variable as our database object.
-// All changes made to the database are made through this fb object.
-var fb = new Firebase("https://mvhs-fitness-tracker.firebaseio.com/");
-
 // Counts the digits of an id, to prevent fraud with fake id's
 var count = 0;
-
+var teacher_count = 0;
+var fb = new Firebase('http://mvhs-fitness-tracker.firebaseio.com')
 // Create a Stopwatch class
 // elem is our stopwatch element, referred to by the stopwatch id in our .html file
 // options is an optional variable you can pass in
@@ -37,7 +34,7 @@ var Stopwatch = function(elem, options) {
   elem.appendChild(resetButton);
 
   // initialize
-  reset();
+  init();
 
   // create initial template for timer
   function createTimer() {
@@ -127,6 +124,11 @@ var Stopwatch = function(elem, options) {
     render();
   }
 
+  function init () {
+    clock = 0;
+    minutes = 0;
+    render();
+  }
   // Update is called continuously
   function update() {
     clock += delta();
@@ -181,21 +183,38 @@ function JSONToCSVConvertor(JSONData) {
   //1st loop is to extract all of the data from array
   for (var i = 0; i < arrData.length; i++) {
       // Initialize an excel sheet row
-      var row = "";
-      // Data of all the students
+      var row = '';
+      // Data of the whole run
       var run_data = JSON.parse(arrData[i]);
-      // Array of all id numbers
-      var student_id_array = Object.keys(run_data);
+      // array of all teachers
+      var teachers = Object.keys(run_data);
+      // teacher on this device
+      var this_teacher = document.getElementById('teacher_id_input').value;
+      // Loop through all teachers
+      for(var i = 0; i < teachers.length; i++)
+      {
+        // Set this teacher equal to it's index in all teachers array
+        if(teachers[i] == this_teacher)
+          this_teacher = i;
+      }
+      // Data of this teacher and it's students
+      var teacher_data = run_data[teachers[this_teacher]];
 
+      // Array of student ids
+      var student_ids = Object.keys(teacher_data);
       // Loop through all students
-      for (var j = 0; j <= student_id_array.length-1; j++) {
-        // Add ID of the student in the first column, time in the second column
-        row += '"' + student_id_array[j] + '",' + '"' + run_data[student_id_array[j]].time + '",';
-        //add a line break after each row
+      for(var i = 0; i < student_ids.length; i++)
+      {
+        var student_id = student_ids[i];
+        var student_time = teacher_data[student_id].time;
+        // One column for student id, one for student time
+        row += '"' + student_id + '",' + '"' + student_time + '",';
+        // Add this row to the excel sheet and a new line
         CSV += row + '\r\n';
-        // Initialize the next row
-        row = "";
-      };
+        // Re-initialize row for next student
+        row = '';
+      }
+
   }
 
   // If the CSV hasn't been changed after any of the loops, return an error
@@ -223,7 +242,7 @@ function JSONToCSVConvertor(JSONData) {
   document.body.removeChild(link);
 
   // Clear the database
-  fb.remove();  
+  fb.child(document.getElementById('teacher_id_input').value).remove();  
 };
 
 
@@ -245,8 +264,8 @@ document.getElementById('student_id_input').addEventListener('keyup', function (
   if(count < 9)
     return;
 
-  // our database has a child instance for every id number
-  fb.child(document.getElementById('student_id_input').value).set({
+  // our database has a child instance for every teacher and every id number
+  fb.child(document.getElementById('teacher_id_input').value).child(document.getElementById('student_id_input').value).set({
     // Every id number has a time attribute, which we get from the stopwatch public methods
     time: stopwatch.getTime()
   });
@@ -259,29 +278,39 @@ document.getElementById('student_id_input').addEventListener('keyup', function (
   count = 0;
 });
 
-// Function in called everytime our database is updated
-fb.on('value', function (run_data) {
-  // Loop through each student
-  run_data.forEach(function (student) {
-    
-    // Student ID
-    var student_id = student.key();
-    // Student Time
-    var student_time = student.val().time;
-    // Create a row element for the student (will be pushed to .html file, not excel sheet)
-    var student_row = document.createElement('tr');
-    // The row will have student's id
-    student_row.innerHTML = "<td class='student_id' id='" + student_id + "'>" + student_id + "</td>";
-    // and student's time
-    student_row.innerHTML += "<td class='student_time' id='" + student_id + "_time'>" + student_time + "</td>";
+document.getElementById('teacher_id_input').addEventListener('keyup', function (event) {
+  teacher_count++;
+  if(teacher_count < 9)
+    return
 
-    // If there is no existing row for this student, push the element to the .html file.
-    // row is pushed into the times table referred to by the unique id attribute, "times"
-    if(!document.getElementById(student_id))
-      document.getElementById("times").appendChild(student_row);
-    // Else, inject the time into the student's row
-    else
-      document.getElementById(student_id + "_time").innerHTML = student_time;
+  // Hide teacher input box after id is put in
+  document.getElementById('teacher_id_input').className = 'hidden';
+})
+
+// Function in called everytime our database is updated
+fb.on('value', function (teacher_data) {
+  // Loop through each teacher
+  teacher_data.forEach(function (student_data) {
+    student_data.forEach(function (student){
+      // Student ID
+      var student_id = student.key();
+      // Student Time
+      var student_time = student.val().time;
+      // Create a row element for the student (will be pushed to .html file, not excel sheet)
+      var student_row = document.createElement('tr');
+      // The row will have student's id
+      student_row.innerHTML = "<td class='student_id' id='" + student_id + "'>" + student_id + "</td>";
+      // and student's time
+      student_row.innerHTML += "<td class='student_time' id='" + student_id + "_time'>" + student_time + "</td>";
+
+      // If there is no existing row for this student, push the element to the .html file.
+      // row is pushed into the times table referred to by the unique id attribute, "times"
+      if(!document.getElementById(student_id))
+        document.getElementById("times").appendChild(student_row);
+      // Else, inject the time into the student's row
+      else
+        document.getElementById(student_id + "_time").innerHTML = student_time;
+    });
 
   });
 });

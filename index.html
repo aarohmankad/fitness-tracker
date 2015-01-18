@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
 	<!-- Import our database library -->
-	<script src="https://cdn.firebase.com/js/client/2.0.5/firebase.js"></script>
+	<script src="js/firebase.js"></script>
 	<!-- 
 		This is a fallback file to store data in, in case the user has no internet connection 
 	-->
@@ -22,6 +22,7 @@
 		<div class="row">
 			<!-- This class is configuring the layout. -->
 			<div class="col-sm-8 col-sm-offset-2">
+				<input type="text" class="form-control" placeholder="Teacher ID" id="teacher_id_input">
 				<!-- Input box to scan id card of students -->
 				<!-- 
 					You can fetch the value of this input box by referring to it's id attribute
