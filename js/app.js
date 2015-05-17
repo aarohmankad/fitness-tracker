@@ -1,8 +1,5 @@
 // Search in order of how everything is stepped through. There are steps 1-
 
-// Counts the digits of an id, to prevent fraud with fake id's
-var count = 0;
-var teacher_count = 0;
 var fb = new Firebase('http://mvhs-fitness-tracker.firebaseio.com')
 // Create a Stopwatch class
 // elem is our stopwatch element, referred to by the stopwatch id in our .html file
@@ -120,6 +117,10 @@ var Stopwatch = function(elem, options) {
     // Clear the table of id's and times
     document.getElementById('times').innerHTML = "";
 
+    fb.child(document.getElementById('teacher_id_input').value).remove();
+    document.getElementById('teacher_id_input').value = "";
+    document.getElementById('teacher_id_input').className = "form-control";
+    document.getElementById('student_id_input').value = "";
     // Push the updates visually
     render();
   }
@@ -256,12 +257,10 @@ var stopwatch = new Stopwatch(elem, {delay:1000});
 
 // This function is called everytime a key is pressed
 // event is an object that carries data on what was pressed
-document.getElementById('student_id_input').addEventListener('keyup', function (event) {
+document.getElementById('student_id_input').addEventListener('keypress', function (event) {
   
-  // Add one to count for every number in the id
-  count++;
   // If the entire id isn't typed, return
-  if(count < 9)
+  if(document.getElementById('student_id_input').value.length < 9)
     return;
 
   // our database has a child instance for every teacher and every id number
@@ -278,19 +277,29 @@ document.getElementById('student_id_input').addEventListener('keyup', function (
   count = 0;
 });
 
-document.getElementById('teacher_id_input').addEventListener('keyup', function (event) {
-  teacher_count++;
-  if(teacher_count < 9)
-    return
+document.getElementById('teacher_id_input').addEventListener('keypress', function (event) {
+ if(document.getElementById('teacher_id_input').value.length < 9)
+    return;
 
   // Hide teacher input box after id is put in
   document.getElementById('teacher_id_input').className = 'hidden';
 })
 
 // Function in called everytime our database is updated
-fb.on('value', function (teacher_data) {
+fb.on('value', function (run_data) {
   // Loop through each teacher
-  teacher_data.forEach(function (student_data) {
+  var teacher_data = run_data.val();
+  if(teacher_data)
+    var teachers = Object.keys(teacher_data);
+  else
+    return;
+  var this_teacher = "/";
+  for(teacher in teachers)
+    if(teacher == document.getElementById('teacher_id_input').value)
+      this_teacher = teacher;
+  
+  run_data.child(this_teacher).forEach(function (student_data) {
+    document.getElementById("times").innerHTML = "";
     student_data.forEach(function (student){
       // Student ID
       var student_id = student.key();
