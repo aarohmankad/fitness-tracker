@@ -2,7 +2,7 @@
 
 var fb = new Firebase('http://mvhs-fitness-tracker.firebaseio.com')
 
-
+var teacher = "";
 
 var Stopwatch = function(elem, options) {
 
@@ -284,9 +284,9 @@ document.getElementById('student_id_input').addEventListener('keyup', function (
 document.getElementById('teacher_id_input').addEventListener('keyup', function (event) {
  if(document.getElementById('teacher_id_input').value.length != 9)
     return;
-
   
   document.getElementById('teacher_id_input').className = 'hidden';
+  console.log(document.getElementById('teacher_id_input').value);
 })
 
 
